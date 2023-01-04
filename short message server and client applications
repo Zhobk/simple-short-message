@@ -55,3 +55,76 @@ int main(int argc, char **argv)
     struct timeval tv;
 int maxfd,stdeof,c,ret;
 char *saddr = NULL, *sport = NULL;
+
+while ((c = getopt (argc, argv, "p:s:")) != -1)
+    switch (c)
+    {
+        case 's':
+            saddr = optarg;
+            break;
+        case 'p':
+            sport = optarg;
+            break;
+        case '?':
+            fprintf(stderr,"Unrecognized option: -%c\n", optopt);
+            return 1;
+        default:
+            abort ();
+    }
+
+    /* Open socket descriptor */
+    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
+        perror("Socket");
+        exit(1);
+    }
+
+    /* Fill structure with 0 */
+    bzero(&(server_addr.sin_zero),sizeof server_addr);
+    server_addr.sin_family = AF_INET;
+
+    /* Port number defined? */
+    if ( sport != NULL )
+        server_addr.sin_port = htons(atoi(sport));
+    else
+        server_addr.sin_port = htons(PORT);
+
+    /* Remote ip address defined? */
+    if ( saddr != NULL )
+        inet_pton(AF_INET, saddr, &(server_addr.sin_addr));
+    else
+        inet_pton(AF_INET, SADDR , &(server_addr.sin_addr));
+
+
+    /* Connect to remote server */
+    if (connect(sock, (struct sockaddr *)&server_addr, sizeof(struct sockaddr)) == -1)
+    {
+        perror("Connect");
+        exit(1);
+    }
+
+    FD_ZERO(&readfds);
+    FD_SET(STDIN, &readfds);
+    FD_SET(sock, &readfds);
+
+while (1) {
+    testfds=readfds;
+
+    tv.tv_sec = TV_SEC;
+    tv.tv_usec = 0;
+
+
+    ret=select(FD_SETSIZE, &testfds, (fd_set *)NULL, (fd_set *)NULL, &tv);
+
+    switch (ret) {
+case 0:
+          printf("Timed out.\n");
+  break;
+case -1:
+          printf("Select problem.\n");
+          exit(1);
+    default:
+      test_fds(testfds,sock);
+  break;
+    }
+  }
+}
