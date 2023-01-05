@@ -128,3 +128,31 @@ case -1:
     }
   }
 }
+
+void authenticate(int client) {
+  char userID[20], password[20];
+  char authMessage[50];
+
+  // Prompt user for UserID and password
+  printf("UserID: ");
+  scanf("%s", userID);
+  printf("Password: ");
+  scanf("%s", password);
+
+  // Send user credentials to server
+  sprintf(authMessage, "USER %s %s", userID, password);
+  send(client, authMessage, strlen(authMessage), 0);
+
+  // Receive server response
+  char response[50];
+  recv(client, response, 50, 0);
+
+  // Parse response
+  if (strcmp(response, "+OK UserID and password okay go ahead.") == 0) {
+    printf("Authentication successful.\n");
+  } else {
+    printf("Authentication failed.\n");
+    close(client);
+    exit(1);
+  }
+}
