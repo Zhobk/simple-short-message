@@ -156,3 +156,23 @@ void authenticate(int client) {
     exit(1);
   }
 }
+
+// function for handling LIST command
+void handleListCommand(int client) {
+    char message[50];
+    int num;
+    printf("Enter message number:");
+    scanf("%d", &num);
+    sprintf(message, "LIST %d", num);
+    send(client, message, strlen(message), 0);
+
+    char response[50];
+    recv(client, response, 50, 0);
+
+    if (strcmp(response, "+OK listing follows.") == 0) {
+        // list the messages
+        // receive messages from the server in a loop
+    } else {
+        printf("%s\n",response);
+    }
+}
