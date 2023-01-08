@@ -176,3 +176,39 @@ void handleListCommand(int client) {
         printf("%s\n",response);
     }
 }
+
+// function for handling RET command
+void handleRetCommand(int client) {
+    char message[50];
+    int num;
+    printf("Enter message number:");
+    scanf("%d", &num);
+    sprintf(message, "RET %d", num);
+    send(client, message, strlen(message), 0);
+
+    char response[50];
+    recv(client, response, 50, 0);
+
+    if (strcmp(response, "+OK message follows.") == 0) {
+        // receive message and display it
+    } else {
+        printf("%s\n",response);
+    }
+}
+void handleDelCommand(int client) {
+    char message[50];
+    int num;
+    printf("Enter message number:");
+    scanf("%d", &num);
+    sprintf(message, "DEL %d", num);
+    send(client, message, strlen(message), 0);
+
+    char response[50];
+    recv(client, response, 50, 0);
+
+    if (strcmp(response, "+OK message deleted.") == 0) {
+        printf("Message deleted successfully.\n");
+    } else {
+        printf("%s\n",response);
+    }
+}
