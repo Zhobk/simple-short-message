@@ -212,3 +212,40 @@ void handleDelCommand(int client) {
         printf("%s\n",response);
     }
 }
+
+void handleSendCommand(int client) {
+    char message[50], txt[50];
+    int num;
+    printf("Enter UserID: ");
+    scanf("%d", &num);
+    printf("Enter the message: ");
+    scanf("%s", txt);
+    sprintf(message, "SEND %d %s", num, txt);
+    send(client, message, strlen(message), 0);
+
+    char response[50];
+    recv(client, response, 50, 0);
+
+    if (strcmp(response, "+OK message sends to UserID.") == 0) {
+        printf("Message sent successfully.\n");
+    } else {
+        printf("%s\n",response);
+        }
+}
+
+void handleQuitCommand(int client) {
+    char message[50];
+    sprintf(message, "QUIT");
+    send(client, message, strlen(message), 0);
+
+    char response[50];
+    recv(client, response, 50, 0);
+
+    if (strcmp(response, "+OK Bye UserID.") == 0) {
+        printf("Disconnecting from server...\n");
+        close(client);
+        exit(0);
+    } else {
+        printf("%s\n",response);
+    }
+}
