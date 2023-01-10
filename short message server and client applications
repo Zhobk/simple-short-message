@@ -249,3 +249,19 @@ void handleQuitCommand(int client) {
         printf("%s\n",response);
     }
 }
+
+while ((c = getopt(argc, argv, "d:p:u:")) != -1) {
+    switch (c) {
+        case 'd':
+            strcpy(directory, optarg);
+            break;
+        case 'p':
+            port = atoi(optarg);
+            break;
+        case 'u':
+            strcpy(userFile, optarg);
+            break;
+        default:
+            usage();
+    }
+}
