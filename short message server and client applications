@@ -265,3 +265,22 @@ while ((c = getopt(argc, argv, "d:p:u:")) != -1) {
             usage();
     }
 }
+
+void logEvent(char* event) {
+    // Open the log file for appending
+    FILE* logFile = fopen("server.log", "a");
+
+    // Get the current date and time
+    time_t now = time(NULL);
+    struct tm* timeinfo = localtime(&now);
+    char timeString[20];
+    strftime(timeString, 20, "%Y-%m-%d %H:%M:%S", timeinfo);
+
+    // Write the event to the log file with the current date and time
+    fprintf(logFile, "[%s] %s\n", timeString, event);
+
+    // Close the log file
+    fclose(logFile);
+}
+
+
